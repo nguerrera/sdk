@@ -26,6 +26,7 @@ namespace Microsoft.NET.Build.Tasks
         private readonly HashSet<string> _projectFileDependencies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private IPackageResolver _packageResolver;
         private LockFile _lockFile;
+        private IList<LockFileTarget> _filteredTargets;
 
         #region Output Items
 
@@ -112,6 +113,14 @@ namespace Microsoft.NET.Build.Tasks
             get; set;
         }
 
+        /// <summary>
+        /// If non-empty, only raise items for the given targets.
+        /// </summary>
+        public string[] TargetFilter
+        {
+            get; set;
+        }
+
         #endregion
 
         public ResolvePackageDependencies()
@@ -153,6 +162,40 @@ namespace Microsoft.NET.Build.Tasks
 
                 return _lockFile;
             }
+        }
+
+        private IList<LockFileTarget> FilteredTargets
+        {
+            get
+            {
+                if (_filteredTargets == null)
+                {
+                    _filteredTargets = FilterTargets();
+                }
+
+                return _filteredTargets;
+            }
+        }
+
+        private IList<LockFileTarget> FilterTargets()
+        {
+            if (TargetFilter == null || TargetFilter.Length == 0)
+            {
+                return LockFile.Targets;
+            }
+
+            var filter = new HashSet<string>(TargetFilter, StringComparer.OrdinalIgnoreCase);
+            var list = new List<LockFileTarget>(filter.Count);
+
+            foreach (LockFileTarget target in LockFile.Targets)
+            {
+                if (filter.Contains(target.Name))
+                {
+                    list.Add(target);
+                }
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -220,7 +263,7 @@ namespace Microsoft.NET.Build.Tasks
                         fileItem.SetMetadata(MetadataKeys.Type, "AnalyzerAssembly");
 
                         // get targets that contain this package
-                        var parentTargets = LockFile.Targets
+                        var parentTargets = FilteredTargets
                             .Where(t => t.Libraries.Any(lib => lib.Name == package.Name));
 
                         foreach (var target in parentTargets)
@@ -274,10 +317,9 @@ namespace Microsoft.NET.Build.Tasks
         // get target definitions and package and file dependencies
         private void RaiseLockFileTargets()
         {
-            TaskItem item;
-            foreach (var target in LockFile.Targets)
+            foreach (var target in FilteredTargets)
             {
-                item = new TaskItem(target.Name);
+                var item = new TaskItem(target.Name);
                 item.SetMetadata(MetadataKeys.RuntimeIdentifier, target.RuntimeIdentifier ?? string.Empty);
                 item.SetMetadata(MetadataKeys.TargetFrameworkMoniker, target.TargetFramework.DotNetFrameworkName);
                 item.SetMetadata(MetadataKeys.FrameworkName, target.TargetFramework.Framework);

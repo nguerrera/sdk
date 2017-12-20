@@ -179,10 +179,21 @@ Copyright (c) .NET Foundation. All rights reserved.
       TargetFrameworkMoniker="$(NuGetTargetMoniker)"
       RuntimeIdentifier="$(RuntimeIdentifier)" />
 
+    <!-- By default, don't raise assets for TFM/RID other than current. This prevents unnecessary items from being
+         generated for other TFMs in multi-targeted builds or for RIDs that we won't ever query. This boolean can
+         be set to false as a compat escape hatch to get the old (slower) behavior. -->
+    <PropertyGroup Condition="'$(FilterPackageDependencyItemsToCurrentTarget)' == ''">
+      <FilterPackageDependencyItemsToCurrentTarget>true</FilterPackageDependencyItemsToCurrentTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PackageDependencyTargetFilter)' == '' and '$(FilterPackageDependencyItemsToCurrentTarget)' == 'true'">
+      <PackageDependencyItemTargetFilter>$(NuGetTargetMoniker);$(_NuGetTargetMonikerAndRID)</PackageDependencyItemTargetFilter>
+    </PropertyGroup>
+
     <ResolvePackageDependencies
       ProjectPath="$(MSBuildProjectFullPath)"
       ProjectAssetsFile="$(ProjectAssetsFile)"
       ProjectLanguage="$(Language)"
+      TargetFilter="$(PackageDependencyItemTargetFilter)"
       ContinueOnError="ErrorAndContinue">
 
       <Output TaskParameter="TargetDefinitions" ItemName="TargetDefinitions" />
