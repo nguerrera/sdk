@@ -147,8 +147,11 @@ namespace Microsoft.NET.Build.Tests
                 .Restore(Log);
 
             var getValuesCommand = new GetValuesCommand(Log, testAsset.TestRoot,
-                "netcoreapp1.1", "TargetDefinitions", GetValuesCommand.ValueType.Item);
-
+                "netcoreapp1.1", "TargetDefinitions", GetValuesCommand.ValueType.Item)
+            {
+                DependsOnTargets = "RunResolvePackageDependencies",
+            };
+        
             getValuesCommand
                 .Execute()
                 .Should()

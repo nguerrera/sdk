@@ -760,7 +760,9 @@ namespace Microsoft.NET.Build.Tests
             {
                 Name = "Library",
                 TargetFrameworks = "netstandard2.0",
-                IsSdkProject = true
+                IsSdkProject = true,
+                // references from packages go through a different code path to be marked externally resolved.
+                PackageReferences = { new TestPackageReference("NewtonSoft.Json", "10.0.1") }
             };
 
             var asset = _testAssetsManager.CreateTestProject(
@@ -795,7 +797,7 @@ namespace Microsoft.NET.Build.Tests
 
             foreach (var (value, metadata) in references)
             {
-                metadata["ExternallyResolved"].Should().BeEquivalentTo((markAsExternallyResolved ?? true).ToString());
+                metadata["ExternallyResolved"].Should().BeEquivalentTo((markAsExternallyResolved ?? true) ? "true" : "");
             }
         }
     }
