@@ -24,6 +24,7 @@ namespace Microsoft.NET.Publish.Tests
         {
         }
 
+
         [Fact]
         public void It_publishes_portable_apps_to_the_publish_folder_and_the_app_should_run()
         {
@@ -442,6 +443,35 @@ public static class Program
                 .Execute()
                 .Should()
                 .Pass();
+        }
+
+
+        [Fact]
+        public void It_fails_for_unsupported_rid()
+        {
+            var helloWorldAsset = _testAssetsManager
+                .CopyTestAsset("HelloWorld")
+                .WithSource()
+                .Restore(Log, "", "/p:RuntimeIdentifier=notvalid");
+
+            var publishCommand = new PublishCommand(Log, helloWorldAsset.TestRoot);
+            var publishResult = publishCommand.Execute("/p:RuntimeIdentifier=notvalid");
+
+            publishResult.Should().Fail();
+        }
+
+        [Fact]
+        public void It_allows_unsupported_rid_with_override()
+        {
+            var helloWorldAsset = _testAssetsManager
+                .CopyTestAsset("HelloWorld")
+                .WithSource()
+                .Restore(Log, "", "/p:RuntimeIdentifier=notvalid");
+
+            var publishCommand = new PublishCommand(Log, helloWorldAsset.TestRoot);
+            var publishResult = publishCommand.Execute("/p:RuntimeIdentifier=notvalid", "/p:EnsureNETCoreAppRuntime=false");
+
+            publishResult.Should().Pass();
         }
     }
 }
