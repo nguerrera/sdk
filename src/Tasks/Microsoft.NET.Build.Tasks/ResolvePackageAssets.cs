@@ -138,7 +138,7 @@ namespace Microsoft.NET.Build.Tasks
                 setup: (asset, item) =>
                 {
                     string locale = asset.Properties["locale"];
-                    item.SetMetadata(MetadataKeys.Culture, "locale");
+                    item.SetMetadata(MetadataKeys.Culture, locale);
                     item.SetMetadata(MetadataKeys.DestinationSubDirectory, locale + Path.DirectorySeparatorChar);
                 });
 
