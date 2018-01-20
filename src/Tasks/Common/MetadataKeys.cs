@@ -61,6 +61,8 @@ namespace Microsoft.NET.Build.Tasks
         public const string NuGetSourceType = "NuGetSourceType";
 
         // References
+        public const string ExternallyResolved = "ExternallyResolved";
+        public const string HintPath = "HintPath";
         public const string Private = "Private";
         public const string Pack = "Pack";
 

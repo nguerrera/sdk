@@ -3,14 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using NuGet.Frameworks;
-using NuGet.Packaging.Core;
 using NuGet.ProjectModel;
 
 namespace Microsoft.NET.Build.Tasks
@@ -91,12 +87,12 @@ namespace Microsoft.NET.Build.Tasks
                 package => package.CompileTimeAssemblies,
                 setup: (asset, item) =>
                 {
-                    item.SetMetadata("Private", "false");
-                    item.SetMetadata("HintPath", item.ItemSpec);
+                    item.SetMetadata(MetadataKeys.Private, "false");
+                    item.SetMetadata(MetadataKeys.HintPath, item.ItemSpec);
 
                     if (MarkPackageReferencesAsExternallyResolved)
                     {
-                        item.SetMetadata("ExternallyResolved", "true");
+                        item.SetMetadata(MetadataKeys.ExternallyResolved, "true");
                     }
                 });
 
@@ -156,7 +152,7 @@ namespace Microsoft.NET.Build.Tasks
                 setup: (asset, item) =>
                 {
                     string directory = Path.GetDirectoryName(asset.Path);
-                    item.SetMetadata("DestinationSubDirectory", directory + Path.DirectorySeparatorChar);
+                    item.SetMetadata(MetadataKeys.DestinationSubDirectory, directory + Path.DirectorySeparatorChar);
                 });
 
             if (!DisableTransitiveProjectReferences)

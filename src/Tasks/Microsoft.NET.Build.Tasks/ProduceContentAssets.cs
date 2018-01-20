@@ -18,7 +18,6 @@ namespace Microsoft.NET.Build.Tasks
     /// </summary>
     public sealed class ProduceContentAssets : TaskBase
     {
-        private const string PPOutputPathKey = "PPOutputPath";
         private readonly List<ITaskItem> _contentItems = new List<ITaskItem>();
         private readonly List<ITaskItem> _fileWrites = new List<ITaskItem>();
         private readonly List<ITaskItem> _copyLocalItems = new List<ITaskItem>();
@@ -163,7 +162,7 @@ namespace Microsoft.NET.Build.Tasks
                 else
                 {
                     string projectLanguage = NuGetUtils.GetLockFileLanguageName(ProjectLanguage);
-                    if (grouping.Any(t => t.GetMetadata("CodeLanguage") == projectLanguage))
+                    if (grouping.Any(t => t.GetMetadata(MetadataKeys.CodeLanguage) == projectLanguage))
                     {
                         codeLanguageToSelect = projectLanguage;
                     }
@@ -183,7 +182,7 @@ namespace Microsoft.NET.Build.Tasks
                         continue;
                     }
 
-                    if (contentFile.GetMetadata("codeLanguage") == codeLanguageToSelect)
+                    if (contentFile.GetMetadata(MetadataKeys.CodeLanguage) == codeLanguageToSelect)
                     {
                         ProduceContentAsset(contentFile);
                     }
@@ -192,13 +191,13 @@ namespace Microsoft.NET.Build.Tasks
         }
 
         private bool IsPreprocessorFile(ITaskItem contentFile) =>
-            !string.IsNullOrEmpty(contentFile.GetMetadata(PPOutputPathKey));
+            !string.IsNullOrEmpty(contentFile.GetMetadata(MetadataKeys.PPOutputPath));
 
         private void ProduceContentAsset(ITaskItem contentFile)
         {
             string resolvedPath = contentFile.ItemSpec;
             string pathToFinalAsset = resolvedPath;
-            string ppOutputPath = contentFile.GetMetadata(PPOutputPathKey);
+            string ppOutputPath = contentFile.GetMetadata(MetadataKeys.PPOutputPath);
             string packageName = contentFile.GetMetadata(MetadataKeys.NuGetPackageId);
             string packageVersion = contentFile.GetMetadata(MetadataKeys.NuGetPackageVersion);
 
@@ -219,7 +218,7 @@ namespace Microsoft.NET.Build.Tasks
 
             if (contentFile.GetBooleanMetadata("CopyToOutput") == true)
             {
-                string outputPath = contentFile.GetMetadata("OutputPath");
+                string outputPath = contentFile.GetMetadata(MetadataKeys.OutputPath);
                 outputPath = string.IsNullOrEmpty(outputPath) ? ppOutputPath : outputPath;
 
                 if (!string.IsNullOrEmpty(outputPath))
@@ -233,12 +232,12 @@ namespace Microsoft.NET.Build.Tasks
                 }
                 else
                 {
-                    Log.LogWarning(Strings.ContentItemDoesNotProvideOutputPath, pathToFinalAsset, "copyToOutput", "outputPath", PPOutputPathKey);
+                    Log.LogWarning(Strings.ContentItemDoesNotProvideOutputPath, pathToFinalAsset, MetadataKeys.CopyToOutput, MetadataKeys.OutputPath, MetadataKeys.PPOutputPath);
                 }
             }
 
             // TODO if build action is none do we even need to write the processed file above?
-            string buildAction = contentFile.GetMetadata("BuildAction");
+            string buildAction = contentFile.GetMetadata(MetadataKeys.BuildAction);
             if (!string.Equals(buildAction, "none", StringComparison.OrdinalIgnoreCase))
             {
                 var item = new TaskItem(pathToFinalAsset);
