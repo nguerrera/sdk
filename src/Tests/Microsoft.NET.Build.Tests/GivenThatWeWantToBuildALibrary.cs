@@ -871,9 +871,9 @@ namespace Microsoft.NET.Build.Tests
                     analyzers.Should().BeEquivalentTo(
                         NuGetCachePaths(
                             "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.Analyzers.dll",
-                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.CSharp.Analyzers.dll",
+                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.VisualBasic.Analyzers.dll",
                             "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.Analyzers.dll",
-                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.CSharp.Analyzers.dll",
+                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.VisualBasic.Analyzers.dll",
                             "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll",
                             // Seen as C# analyzer!
                             //"microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/cs/Microsoft.DependencyValidation.Analyzers.resources.dll",
