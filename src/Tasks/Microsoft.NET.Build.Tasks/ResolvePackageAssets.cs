@@ -33,7 +33,7 @@ namespace Microsoft.NET.Build.Tasks
         public bool MarkPackageReferencesAsExternallyResolved { get; set; }
 
         /// <summary>
-        /// Check that there is at least one package dependency in the RID graph that is not in the 
+        /// Check that there is at least one package dependency in the RID graph that is not in the RID-agnostic graph.
         /// Used as a heuristic to detect invalid RIDs.
         /// </summary>
         public bool EnsureRuntimePackageDependencies { get; set; }
@@ -234,9 +234,6 @@ namespace Microsoft.NET.Build.Tasks
 
             return items.ToArray();
         }
-
-
-
 
         private ITaskItem[] RaiseAnalyzers(LockFile lockFile, LockFileTarget target)
         {

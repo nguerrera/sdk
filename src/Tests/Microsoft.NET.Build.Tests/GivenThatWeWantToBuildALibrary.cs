@@ -156,16 +156,16 @@ namespace Microsoft.NET.Build.Tests
             //builtinProjectsFromProperty.Should().BeEquivalentTo(expectedBuiltinProjects);
         }
 
-        
+
 
         internal static List<string> GetValuesFromTestLibrary(
             ITestOutputHelper log,
             TestAssetsManager testAssetsManager,
             string itemTypeOrPropertyName,
-            Action<GetValuesCommand> setup = null, 
+            Action<GetValuesCommand> setup = null,
             string[] msbuildArgs = null,
-            GetValuesCommand.ValueType valueType = GetValuesCommand.ValueType.Item, 
-            [CallerMemberName] string callingMethod = "", 
+            GetValuesCommand.ValueType valueType = GetValuesCommand.ValueType.Item,
+            [CallerMemberName] string callingMethod = "",
             Action<XDocument> projectChanges = null)
         {
             msbuildArgs = msbuildArgs ?? Array.Empty<string>();
@@ -277,7 +277,7 @@ namespace Microsoft.NET.Build.Tests
         [InlineData("vb", false)]
         public void It_allows_us_to_override_the_documentation_file_name(string language, bool setGenerateDocumentationFileProperty)
         {
-            var testAsset = CreateDocumentationFileLibraryAsset(setGenerateDocumentationFileProperty ? (bool?)true : null, "TestLibDoc.xml", language,  "OverrideDocFileName");
+            var testAsset = CreateDocumentationFileLibraryAsset(setGenerateDocumentationFileProperty ? (bool?)true : null, "TestLibDoc.xml", language, "OverrideDocFileName");
 
             var libraryProjectDirectory = Path.Combine(testAsset.TestRoot, "TestLibrary");
 
@@ -306,7 +306,8 @@ namespace Microsoft.NET.Build.Tests
             };
 
             // vb uses DocumentationFile relative to the IntermediateOutputPath
-            if (language != "vb") {
+            if (language != "vb")
+            {
                 expectedProjectDirectoryFiles.Add("TestLibDoc.xml");
             }
 
@@ -356,13 +357,13 @@ namespace Microsoft.NET.Build.Tests
             //  from a developer command prompt, it won't be set when running tests from VS.  So in that case the
             //  test will simply be skipped.
             string vsInstallDir = Environment.GetEnvironmentVariable("VSINSTALLDIR");
-            
+
             if (vsInstallDir == null)
             {
                 return;
             }
 
-            string csharpDesignTimeTargets = Path.Combine(vsInstallDir, @"MSBuild\Microsoft\VisualStudio\Managed\Microsoft.CSharp.DesignTime.targets");
+            string csharpDesignTimeTargets = Path.Combine(vsInstallDir, @"MSBuild/Microsoft/VisualStudio/Managed/Microsoft.CSharp.DesignTime.targets");
 
             var testAsset = _testAssetsManager
                 .CopyTestAsset("AppWithLibrary")
@@ -798,6 +799,105 @@ namespace Microsoft.NET.Build.Tests
             foreach (var (value, metadata) in references)
             {
                 metadata["ExternallyResolved"].Should().BeEquivalentTo((markAsExternallyResolved ?? true) ? "true" : "");
+            }
+        }
+
+        [Theory]
+        [InlineData("C#", "AppWithLibrary")]
+        [InlineData("VB", "AppWithLibraryVB")]
+        [InlineData("F#", "AppWithLibraryFS")]
+        public void It_resolves_analyzers_correctly(string language, string testAssetName)
+        {
+            var asset = _testAssetsManager
+                .CopyTestAsset(testAssetName, identifier: language)
+                .WithSource()
+                .WithProjectChanges(project =>
+                {
+                    var ns = project.Root.Name.Namespace;
+                    project.Root.Add(
+                        new XElement(ns + "ItemGroup",
+                            new XElement(ns + "PackageReference", 
+                                new XAttribute("Include", "Microsoft.DependencyValidation.Analyzers"), 
+                                new XAttribute("Version", "0.9.0")),
+                            new XElement(ns + "PackageReference", 
+                                new XAttribute("Include", "Microsoft.CodeQuality.Analyzers"),
+                                new XAttribute("Version", "2.6.0"))));
+                })
+                .Restore(Log, relativePath: "TestApp");
+
+            var command = new GetValuesCommand(
+                Log,
+                Path.Combine(asset.Path, "TestApp"),
+                "netcoreapp1.1",
+                "Analyzer",
+                GetValuesCommand.ValueType.Item);
+
+            command.DependsOnTargets = "Build";
+            command.Execute().Should().Pass();
+
+            var analyzers = command.GetValues();
+
+            IEnumerable<string> NuGetCachePaths(params string[] relativePaths)
+                => relativePaths.Select(
+                    r => Path.Combine(TestContext.Current.NuGetCachePath, r.Replace('/', Path.DirectorySeparatorChar)));
+
+            switch (language)
+            {
+                case "C#":
+                    analyzers.Should().BeEquivalentTo(
+                        NuGetCachePaths(
+                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/cs/Microsoft.CodeAnalysis.Analyzers.dll",
+                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/cs/Microsoft.CodeAnalysis.CSharp.Analyzers.dll",
+                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/cs/Microsoft.CodeQuality.Analyzers.dll",
+                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/cs/Microsoft.CodeQuality.CSharp.Analyzers.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/cs/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/de/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/es/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/fr/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/it/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ja/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ko/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pl/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pt-BR/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ru/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/tr/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANS/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANT/Microsoft.DependencyValidation.Analyzers.resources.dll"
+                            ));
+                    break;
+
+                case "VB":
+                    analyzers.Should().BeEquivalentTo(
+                        NuGetCachePaths(
+                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.Analyzers.dll",
+                            "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.CSharp.Analyzers.dll",
+                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.Analyzers.dll",
+                            "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.CSharp.Analyzers.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll",
+                            // Seen as C# analyzer!
+                            //"microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/cs/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/de/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/es/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/fr/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/it/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ja/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ko/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pl/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pt-BR/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ru/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/tr/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANS/Microsoft.DependencyValidation.Analyzers.resources.dll",
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANT/Microsoft.DependencyValidation.Analyzers.resources.dll"
+                            ));
+                    break;
+
+                case "F#":
+                    analyzers.Should().BeEmpty();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(language));
             }
         }
     }
