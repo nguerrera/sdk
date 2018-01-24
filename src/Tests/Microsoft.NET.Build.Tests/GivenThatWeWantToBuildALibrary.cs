@@ -850,20 +850,7 @@ namespace Microsoft.NET.Build.Tests
                             "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/cs/Microsoft.CodeAnalysis.CSharp.Analyzers.dll",
                             "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/cs/Microsoft.CodeQuality.Analyzers.dll",
                             "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/cs/Microsoft.CodeQuality.CSharp.Analyzers.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/cs/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/de/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/es/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/fr/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/it/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ja/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ko/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pl/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pt-BR/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ru/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/tr/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANS/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANT/Microsoft.DependencyValidation.Analyzers.resources.dll"
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll"
                             ));
                     break;
 
@@ -874,21 +861,7 @@ namespace Microsoft.NET.Build.Tests
                             "microsoft.codeanalysis.analyzers/1.1.0/analyzers/dotnet/vb/Microsoft.CodeAnalysis.VisualBasic.Analyzers.dll",
                             "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.Analyzers.dll",
                             "microsoft.codequality.analyzers/2.6.0/analyzers/dotnet/vb/Microsoft.CodeQuality.VisualBasic.Analyzers.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll",
-                            // Seen as C# analyzer!
-                            //"microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/cs/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/de/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/es/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/fr/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/it/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ja/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ko/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pl/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/pt-BR/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/ru/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/tr/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANS/Microsoft.DependencyValidation.Analyzers.resources.dll",
-                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/zh-HANT/Microsoft.DependencyValidation.Analyzers.resources.dll"
+                            "microsoft.dependencyvalidation.analyzers/0.9.0/analyzers/dotnet/Microsoft.DependencyValidation.Analyzers.dll"
                             ));
                     break;
 
