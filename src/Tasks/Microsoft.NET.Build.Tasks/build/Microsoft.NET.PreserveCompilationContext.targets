@@ -44,7 +44,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <UsingTask TaskName="FindItemsFromPackages" AssemblyFile="$(MicrosoftNETBuildTasksAssembly)" />
   <Target Name="ComputeRefAssembliesToPublish"
           Condition="'$(PreserveCompilationContext)' == 'true'"
-          DependsOnTargets="_ComputeLockFileCopyLocal;
+          DependsOnTargets="ResolvePackageAssets;
                             _ParseTargetManifestFiles"
           AfterTargets="ComputeFilesToPublish"
           BeforeTargets="CopyFilesToPublishDirectory">
