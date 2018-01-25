@@ -51,13 +51,28 @@ namespace {project.Name}
         }}
     }}
 }}";
-            
+
             var asset = _testAssetsManager
                 .CreateTestProject(project)
                 .Restore(Log, project.Name);
 
             var cmd = new BuildCommand(Log, Path.Combine(asset.Path, project.Name));
             cmd.Execute().Should().Pass();
+
+            cmd.GetOutputDirectory(targetFramework)
+               .Should()
+               .OnlyHaveFiles(
+                    new[]
+                    {
+                        "ContentFiles.deps.json",
+                        "ContentFiles.dll",
+                        "ContentFiles.pdb",
+                        "ContentFiles.runtimeconfig.dev.json",
+                        "ContentFiles.runtimeconfig.json",
+                        "tools/run.cmd",
+                        "tools/run.sh",
+                    }
+                );
         }
     }
 }
