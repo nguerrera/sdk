@@ -42,7 +42,7 @@ namespace Microsoft.NET.Build.Tasks
         public ITaskItem[] Analyzers { get; private set; }
 
         [Output]
-        public ITaskItem[] ContentFiles { get; private set; }
+        public ITaskItem[] ContentFilesToPreprocess { get; private set; }
 
         [Output]
         public ITaskItem[] CompileTimeAssemblies { get; private set; }
@@ -108,7 +108,7 @@ namespace Microsoft.NET.Build.Tasks
                      });
             }
 
-            ContentFiles = RaisePackageAssets(
+            ContentFilesToPreprocess = RaisePackageAssets(
                 runtimeTarget,
                 p => p.ContentFiles,
                 filter: asset => !string.IsNullOrEmpty(asset.PPOutputPath),
@@ -116,15 +116,16 @@ namespace Microsoft.NET.Build.Tasks
                 {
                     item.SetMetadata(MetadataKeys.BuildAction, asset.BuildAction.ToString());
                     item.SetMetadata(MetadataKeys.CopyToOutput, asset.CopyToOutput.ToString());
+                    item.SetMetadata(MetadataKeys.PPOutputPath, asset.PPOutputPath);
+
+                    if (!string.IsNullOrEmpty(MetadataKeys.OutputPath))
+                    {
+                        item.SetMetadata(MetadataKeys.OutputPath, asset.OutputPath);
+                    }
 
                     if (!string.IsNullOrEmpty(asset.CodeLanguage))
                     {
                         item.SetMetadata(MetadataKeys.CodeLanguage, asset.CodeLanguage);
-                    }
-
-                    if (!string.IsNullOrEmpty(asset.PPOutputPath))
-                    {
-                        item.SetMetadata(MetadataKeys.PPOutputPath, asset.PPOutputPath);
                     }
                 });
 

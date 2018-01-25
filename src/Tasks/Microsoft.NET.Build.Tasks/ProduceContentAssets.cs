@@ -216,7 +216,7 @@ namespace Microsoft.NET.Build.Tasks
                 }
             }
 
-            if (contentFile.GetBooleanMetadata("CopyToOutput") == true)
+            if (contentFile.GetBooleanMetadata(MetadataKeys.CopyToOutput) == true)
             {
                 string outputPath = contentFile.GetMetadata(MetadataKeys.OutputPath);
                 outputPath = string.IsNullOrEmpty(outputPath) ? ppOutputPath : outputPath;
