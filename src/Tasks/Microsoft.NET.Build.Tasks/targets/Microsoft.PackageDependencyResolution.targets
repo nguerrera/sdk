@@ -26,6 +26,7 @@ Copyright (c) .NET Foundation. All rights reserved.
   <!-- Project Assets File -->
   <PropertyGroup>
     <ProjectAssetsFile Condition="'$(ProjectAssetsFile)' == ''">$(BaseIntermediateOutputPath)/project.assets.json</ProjectAssetsFile>
+    <ProjectAssetsCacheFile Condition="'$(ProjectAssetsCacheFile)' == ''">$(IntermediateOutputPath)$(MSBuildProjectName).assets.cache</ProjectAssetsCacheFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -200,6 +201,7 @@ Copyright (c) .NET Foundation. All rights reserved.
 
     <ResolvePackageAssets 
       ProjectAssetsFile="$(ProjectAssetsFile)"
+      ProjectAssetsCacheFile="$(ProjectAssetsCacheFile)"
       ProjectPath="$(MSBuildProjectFullPath)"
       ProjectLanguage="$(Language)"
       TargetFrameworkMoniker="$(NuGetTargetMoniker)"
