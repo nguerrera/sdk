@@ -92,6 +92,6 @@ namespace Microsoft.NET.TestFramework.Commands
             return result;
         }
 
-        public static bool LaunchDebuggerOnTaskExecution { get; set; }
+        public static bool LaunchDebuggerOnTaskExecution { get; set; } = Debugger.IsAttached;
     }
 }
