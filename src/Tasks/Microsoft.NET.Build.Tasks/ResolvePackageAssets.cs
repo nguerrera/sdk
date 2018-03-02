@@ -91,17 +91,14 @@ namespace Microsoft.NET.Build.Tasks
                 TransitiveProjectReferences = reader.ReadItemGroup();
             }
 
+            string externallyResolved = MarkPackageReferencesAsExternallyResolved ? "true" : "";
             foreach (var item in CompileTimeAssemblies)
             {
                 item.SetMetadata(MetadataKeys.NuGetSourceType, "Package");
                 item.SetMetadata(MetadataKeys.NuGetIsFrameworkReference, "true");
                 item.SetMetadata(MetadataKeys.Private, "false");
                 item.SetMetadata(MetadataKeys.HintPath, item.ItemSpec);
-
-                if (MarkPackageReferencesAsExternallyResolved)
-                {
-                    item.SetMetadata(MetadataKeys.ExternallyResolved, "true");
-                }
+                item.SetMetadata(MetadataKeys.ExternallyResolved, externallyResolved);
             }
 
             foreach (var item in FrameworkAssemblies)
@@ -271,12 +268,14 @@ namespace Microsoft.NET.Build.Tasks
 
             public CacheWriter(ResolvePackageAssets task)
             {
-                var stream = File.Open(task.ProjectAssetsCacheFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-
                 var targetFramework = NuGetUtils.ParseFrameworkName(task.TargetFrameworkMoniker);
 
-                _task = task;
+                Directory.CreateDirectory(Path.GetDirectoryName(task.ProjectAssetsCacheFile));
+                var stream = File.Open(task.ProjectAssetsCacheFile, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
                 _writer = new BinaryWriter(stream, s_textEncoding, leaveOpen: false);
+                
+
+                _task = task;
                 _lockFile = new LockFileCache(task.BuildEngine4).GetLockFile(task.ProjectAssetsFile);
                 _packageResolver = NuGetPackageResolver.CreateResolver(_lockFile, _task.ProjectPath);
                 _compileTimeTarget = _lockFile.GetTargetAndThrowIfNotFound(targetFramework, runtime: null);
@@ -575,8 +574,11 @@ namespace Microsoft.NET.Build.Tasks
 
             private void WriteMetadata(string key, string value)
             {
-                _bufferedMetadata.Add(GetMetadataIndex(key));
-                _bufferedMetadata.Add(GetMetadataIndex(value));
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _bufferedMetadata.Add(GetMetadataIndex(key));
+                    _bufferedMetadata.Add(GetMetadataIndex(value));
+                }
             }
 
             private int GetMetadataIndex(string value)
