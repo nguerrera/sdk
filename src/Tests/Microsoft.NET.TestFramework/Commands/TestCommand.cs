@@ -67,6 +67,11 @@ namespace Microsoft.NET.TestFramework.Commands
                 .CaptureStdOut()
                 .CaptureStdErr();
 
+            if (LaunchDebuggerOnTaskExecution)
+            {
+                command.EnvironmentVariable("DEBUG_MICROSOFT_NET_BUILD_TASKS", "true");
+            }
+
             var result = command.Execute();
 
             Log.WriteLine($"> {result.StartInfo.FileName} {result.StartInfo.Arguments}");
@@ -86,5 +91,7 @@ namespace Microsoft.NET.TestFramework.Commands
 
             return result;
         }
+
+        public static bool LaunchDebuggerOnTaskExecution { get; set; }
     }
 }
