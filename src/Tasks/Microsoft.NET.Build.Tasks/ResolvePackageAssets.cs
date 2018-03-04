@@ -65,6 +65,11 @@ namespace Microsoft.NET.Build.Tasks
         public bool DisableFrameworkAssemblies { get; set; }
 
         /// <summary>
+        /// Log messages from assets log to build error/warning/message.
+        /// </summary>
+        public bool EmitAssetsLogMessages { get; set; }
+
+        /// <summary>
         /// Indicate to MSBuild ResolveAssemblyReferences that 
         /// </summary>
         public bool MarkPackageReferencesAsExternallyResolved { get; set; }
@@ -243,6 +248,11 @@ namespace Microsoft.NET.Build.Tasks
 
         private void LogMessagesToMSBuild()
         {
+            if (!EmitAssetsLogMessages)
+            {
+                return;
+            }
+
             foreach (var item in LogMessages)
             {
                 string message = item.ItemSpec;
@@ -252,13 +262,13 @@ namespace Microsoft.NET.Build.Tasks
                 switch (severity)
                 {
                     case nameof(LogLevel.Error):
-                        Log.LogError(null, code, null, null, 0, 0, 0, 0, message);
+                        Log.LogError(null, code, null, ProjectPath, 0, 0, 0, 0, message);
                         break;
                     case nameof(LogLevel.Warning):
-                        Log.LogWarning(null, code, null, null, 0, 0, 0, 0, message);
+                        Log.LogWarning(null, code, null, ProjectPath, 0, 0, 0, 0, message);
                         break;
                     default:
-                        Log.LogMessage(null, code, null, null, 0, 0, 0, 0, message);
+                        Log.LogMessage(null, code, null, ProjectPath, 0, 0, 0, 0, message);
                         break;
                 }
             }
@@ -640,6 +650,15 @@ namespace Microsoft.NET.Build.Tasks
                     WriteItem(message.Message);
                     WriteMetadata(MetadataKeys.DiagnosticCode, message.Code.ToString());
                     WriteMetadata(MetadataKeys.Severity, GetSeverity(message.Level));
+                }
+
+                if (_task.EnsureRuntimePackageDependencies && !string.IsNullOrEmpty(_task.RuntimeIdentifier))
+                {
+                    if (_compileTimeTarget.Libraries.Count >= _runtimeTarget.Libraries.Count)
+                    {
+                        WriteItem(string.Format(Strings.UnsupportedRuntimeIdentifier, _task.RuntimeIdentifier));
+                        WriteMetadata(MetadataKeys.Severity, nameof(LogLevel.Error));
+                    }
                 }
             }
 

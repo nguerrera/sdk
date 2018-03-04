@@ -204,6 +204,7 @@ Copyright (c) .NET Foundation. All rights reserved.
       ProjectAssetsCacheFile="$(ProjectAssetsCacheFile)"
       ProjectPath="$(MSBuildProjectFullPath)"
       ProjectLanguage="$(Language)"
+      EmitAssetsLogMessages="$(EmitAssetsLogMessages)"
       TargetFrameworkMoniker="$(NuGetTargetMoniker)"
       RuntimeIdentifier="$(RuntimeIdentifier)"
       MarkPackageReferencesAsExternallyResolved="$(MarkPackageReferencesAsExternallyResolved)"

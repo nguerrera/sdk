@@ -9,9 +9,9 @@ using System.Linq;
 namespace Microsoft.NET.Build.Tasks
 {
     /// <summary>
-    /// Report Log Messages in the assets file to MSBuild and raise them as
-    /// DiagnosticMessage items that can be consumed downstream (e.g. by the
-    /// dependency node in the solution explorer)
+    /// Raise log messages in the assets file as DiagnosticMessage items
+    /// that can be consumed downstream (e.g. by the dependency node in
+    /// the solution explorer)
     /// </summary>
     public sealed class ReportAssetsLogMessages : TaskBase
     {
