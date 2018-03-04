@@ -122,9 +122,14 @@ namespace Microsoft.NET.Build.Tests
             {
                 result.Should().Pass();
             }
-            else
+            else if (referencerIsSdkProject)
             {
                 result.Should().Fail().And.HaveStdOutContaining("NU1201");
+            }
+            else
+            {
+                result.Should().Fail()
+                    .And.HaveStdOutContaining("It cannot be referenced by a project that targets");
             }
         }
 
