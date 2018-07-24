@@ -1,0 +1,4 @@
+﻿<!-- TODO: This should not be necessary -->
+<Project>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+ </Project>

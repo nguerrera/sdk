@@ -1,0 +1,10 @@
+﻿<!-- TODO:This should not be necessary. -->
+<Project>
+  <PropertyGroup>
+    <NETCoreAppMaximumVersion>3.0</NETCoreAppMaximumVersion>
+    <RuntimeFrameworkVersion>3.0.0-preview1-26624-01</RuntimeFrameworkVersion>
+    <UsingMicrosoftNETSdk>false</UsingMicrosoftNETSdk>
+    <ImportCommonPropsAndTargetsFromMicrosoftNETSdk>false</ImportCommonPropsAndTargetsFromMicrosoftNETSdk>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+</Project>
