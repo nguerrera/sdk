@@ -1,0 +1,33 @@
+<!--
+***********************************************************************************************
+Microsoft.NET.Sdk.Experimental.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) .NET Foundation. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Hackathon hacks -->
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <!-- Import Microsoft.WinFX.targets for WPF on .NETCoreApp 3.0.
+
+       Do not import if Microsoft.Windows.UI.Xaml.Common.targets (WindowsKitsXamlCompilerTargetsPath non-empty) 
+       has been imported.
+
+       This will have to be reconciled with actual .NET Core tooling for xaml.
+  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.WinFX.targets"
+          Condition="Exists('$(MSBuildToolsPath)\Microsoft.WinFX.targets')
+                     and '$(TargetFrameworkIdentifier)' == '.NETCoreApp' 
+                     and '$(_TargetFrameworkVersionWithoutV)' >= '3.0' 
+                     and '$(WindowsKitsXamlCompilerTargetsPath)' == ''"
+          />
+
+</Project>
